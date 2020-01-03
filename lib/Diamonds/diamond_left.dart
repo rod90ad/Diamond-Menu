@@ -17,8 +17,8 @@ class _DiamondLeftState extends State<DiamondLeft> {
 
   @override
   void initState() {
-    offset = Tween<double>(begin: -0.212, end: 0.0).animate(widget.animationController);
-    rotation = Tween<double>(begin: -45.0, end: 0.0).animate(widget.animationController);
+    offset = Tween<double>(begin: -0.211, end: 0.0).animate(widget.animationController);
+    rotation = Tween<double>(begin: -135.0, end: 0.0).animate(widget.animationController);
     widget.animationController.addListener((){
       if(this.mounted)
         setState((){});
@@ -41,30 +41,40 @@ class _DiamondLeftState extends State<DiamondLeft> {
       offset: Offset(size.width * offset.value, 0.0),
       child: RotationTransition(
         turns: AlwaysStoppedAnimation(rotation.value/360),
-        child: widget.animationController.value>=0.98 ? 
-          Scaffold(
-            appBar: AppBar(
-              title: Text("Red", style: TextStyle(color: Colors.red)), 
-              centerTitle: true, 
-              backgroundColor: Colors.white,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.red),
-                onPressed: () { turnToWindow(); },
-              ),
+        child: GestureDetector(
+            child:  Container(
+            width: Tween<double>(begin: size.width * 0.3, end: size.width).animate(widget.animationController).value,
+            height: Tween<double>(begin: size.width * 0.3, end: size.height).animate(widget.animationController).value,
+            child: Scaffold(
+              body: Stack(
+                children: <Widget>[
+                  Container(color: Colors.red),
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: Opacity(
+                      opacity: widget.animationController.value,
+                      child: AppBar(
+                        title: Text("Red", style: TextStyle(color: Colors.red)), 
+                        centerTitle: true,
+                        backgroundColor: Colors.white,
+                        leading: IconButton(
+                          icon: Icon(Icons.arrow_back, color: Colors.red),
+                          onPressed: () { turnToWindow(); },
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              )
             ),
-            body: Container(color: Colors.red),
-          ) : 
-          GestureDetector(
-            child: Container(
-              width: Tween<double>(begin: size.width * 0.3, end: size.width).animate(widget.animationController).value,
-              height: Tween<double>(begin: size.width * 0.3, end: size.height).animate(widget.animationController).value,
-              color: Colors.red,
-            ),
-            onTap: (){ 
-              if(widget.animationController.value==0.0)
-                turnToWindow();
-            },
           ),
+          onTap: (){ 
+            if(widget.animationController.value==0.0)
+              turnToWindow();
+          },
+        ),
       ),
     );
   }
