@@ -1,3 +1,4 @@
+import 'package:diamond_menu/Utils/block_open.dart';
 import 'package:flutter/material.dart';
 
 class DiamondBottom extends StatefulWidget {
@@ -18,7 +19,7 @@ class _DiamondBottomState extends State<DiamondBottom> {
   @override
   void initState() {
     offset = Tween<double>(begin: 0.211, end: 0.0).animate(widget.animationController);
-    rotation = Tween<double>(begin: -225.0, end: 0.0).animate(widget.animationController);
+    rotation = Tween<double>(begin: 45.0, end: 0.0).animate(widget.animationController);
     widget.animationController.addListener((){
       if(this.mounted)
         setState((){});
@@ -28,9 +29,11 @@ class _DiamondBottomState extends State<DiamondBottom> {
 
   void turnToWindow(){
     if(widget.animationController.value == 0.0){
+      BlockOpen.getInstance().setBlocked(true);
       widget.animationController.forward();
     }else if(widget.animationController.value == 1.0){
       widget.animationController.reverse();
+      BlockOpen.getInstance().setBlocked(false);
     }
   }
   
@@ -61,7 +64,10 @@ class _DiamondBottomState extends State<DiamondBottom> {
                         backgroundColor: Colors.white,
                         leading: IconButton(
                           icon: Icon(Icons.arrow_back, color: Colors.orange),
-                          onPressed: () { turnToWindow(); },
+                          onPressed: () { 
+                            if(widget.animationController.value==1.0)
+                              turnToWindow();
+                          },
                         ),
                       ),
                     ),
@@ -71,7 +77,7 @@ class _DiamondBottomState extends State<DiamondBottom> {
             ),
           ),
           onTap: (){ 
-            if(widget.animationController.value==0.0)
+            if(widget.animationController.value==0.0 && !BlockOpen.getInstance().isBlocked())
               turnToWindow();
           },
         ),
